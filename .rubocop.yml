@@ -1,0 +1,29 @@
+AllCops:
+  Exclude:
+    - 'config.ru'
+    - 'bin/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'db/schema.rb'
+    - 'config/puma.rb'
+    - 'spec/rails_helper.rb'
+    - 'spec/spec_helper.rb'
+    - 'config/environments/*.rb'
+    - 'config/initializers/*.rb'
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+Style/StringLiterals:
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*.rb'
+    - 'bin/**/*'
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'config/**/*.rb'
+    - 'db/**/*.rb'
+    - 'bin/**/*'
+Style/Documentation:
+  Enabled: false
