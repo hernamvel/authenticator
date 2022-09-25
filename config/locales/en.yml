@@ -30,4 +30,14 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  activemodel:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              at_least_one_upcase: At least one character must be upcased
+              minimum_length: To few characters. Try a longer password
+              at_least_one_digit: At least one character must be a digit
+            username:
+              already_taken: User already taken

@@ -7,13 +7,7 @@ module Api
       # although this should be scaffolded as well.
 
       before_action :authenticated?
-      before_action :find_user, except: %i[create index]
-
-      # GET /users
-      def index
-        @users = User.all
-        render json: @users, status: :ok
-      end
+      before_action :find_user, except: %i[create]
 
       # GET /users/{username}
       def show
@@ -22,7 +16,7 @@ module Api
 
       # POST /users
       def create
-        @user = User.new(user_params)
+        @user = User.new(user_params_create)
         if @user.save
           render json: @user, status: :created
         else
@@ -33,7 +27,7 @@ module Api
 
       # PUT /users/{username}
       def update
-        if @user.update(user_params)
+        if @user.update(user_params_update)
           render json: @user, status: :ok
         else
           render json: { errors: @user.errors.full_messages },
@@ -54,9 +48,14 @@ module Api
         render json: { errors: 'User not found' }, status: :not_found
       end
 
-      def user_params
-        params.permit(:full_name, :username, :email, :password)
+      def user_params_create
+        params.permit(:full_name, :username, :password)
       end
+
+      def user_params_update
+        params.permit(:full_name, :password)
+      end
+
     end
   end
 end

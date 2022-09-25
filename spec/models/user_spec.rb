@@ -3,11 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:email) { 'hernan@mycompany.com' }
   let(:failed_attempts) { 0 }
   let(:user) do
-    FactoryBot.create(:user, username: 'hernan', email: email, password: 'my_secret_password',
-                      failed_attempts: failed_attempts)
+    FactoryBot.create(:user, username: 'hernan', password: 'My_secret_password1',
+                             failed_attempts: failed_attempts)
   end
 
   describe 'validate user password' do
@@ -15,8 +14,8 @@ RSpec.describe User, type: :model do
 
     subject { user.valid? }
 
-    context 'for a password length greater than the minimum' do
-      let(:new_password) { '1234567890' }
+    context 'for a valid complex password' do
+      let(:new_password) { 'MyPaSSowrd123' }
 
       it 'sets a valid user' do
         expect(subject).to be true
@@ -24,7 +23,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'for a password length lesser than the minimum' do
-      let(:new_password) { '1234' }
+      let(:new_password) { 'Ma134' }
 
       it 'sets a invalid user' do
         expect(subject).to be false
@@ -32,29 +31,21 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'validate user email' do
-    before { user.email = new_email }
+  describe 'validate user full_name' do
+    before { user.full_name = new_name }
 
     subject { user.valid? }
 
-    context 'for a email with a valid format' do
-      let(:new_email) { 'hernan@supercompany.com' }
+    context 'for a present name' do
+      let(:new_name) { 'Pepe Cardenas' }
 
       it 'sets a valid user' do
         expect(subject).to be true
       end
     end
 
-    context 'for a email with no format' do
-      let(:new_email) { '1234' }
-
-      it 'sets a invalid user' do
-        expect(subject).to be false
-      end
-    end
-
-    context 'for an empty email' do
-      let(:new_email) { nil }
+    context 'for a blank name' do
+      let(:new_name) { '' }
 
       it 'sets a invalid user' do
         expect(subject).to be false
@@ -66,10 +57,10 @@ RSpec.describe User, type: :model do
     subject { user.authenticate(password) }
 
     context 'with a matching password' do
-      let(:password) { 'my_secret_password' }
+      let(:password) { 'My_secret_password1' }
 
       it 'authenticates successfully' do
-        expect(subject.email).to eq(email)
+        expect(subject.username).to eq('hernan')
       end
     end
 

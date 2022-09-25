@@ -5,7 +5,11 @@ class AuthenticationService
   attr_reader :user
 
   def initialize(username)
-    @user = User.find_by(username: username)
+    begin
+      @user = User.find(username)
+    rescue ActiveRecord::RecordNotFound
+      @user = nil
+    end
   end
 
   def authenticate(password)

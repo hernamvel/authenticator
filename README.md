@@ -27,14 +27,14 @@ any troubles running the service on a similar version of ruby.
 
 Where <MASTER_KEY> will be provided privately by email.
 
-- Create the database
+- Setting the data storage connection
 
-We are using sqllite so no database engine has to be installed.
+We are using Redis as a data storage. If you need to set an specific Redis
+server for testing this service, plesae edit the `.env` file changing
+the value of the `REDIS_URL` entry with the desired one.
 
 ```
-rails db:create
-rails db:migrate
-rails db:seed
+REDIS_URL='redis://localhost/0'
 ```
 
 To run the tests:
@@ -51,7 +51,11 @@ Finished in 0.19437 seconds (files took 0.85129 seconds to load)
 Coverage report generated for RSpec to /xxx/authenticator/coverage. 306 / 306 LOC (100.0%) covered.
 ```
 
-To run the service
+To run the service, first run the seeds with
+
+`rails db:seed`  <- Yes, this will work
+
+and then,
 
 `rails s`
 
@@ -66,7 +70,7 @@ sign in response.
 - Sign in
 
 ```
-curl -X POST -d 'username=hernan&password=12345678' http://localhost:3000/api/v1/sign_in
+curl -X POST -d 'username=hernan&password=PassTest123' http://localhost:3000/api/v1/sign_in
 
 # Returning authetication token like
 
@@ -81,27 +85,28 @@ curl -X DELETE -H "Authorization: the_token_provided_in_sign_in_response" http:/
 # This returns :no_content if successful
 ```
 
-- Listing all users
+curl -X DELETE -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/sign_out
+
+- Querying an user by username
 
 ```
-curl -X GET -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/users
+curl -X GET -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/users/hernan
 ```
-
-- Querying an user by id (id -> 1 in current seed for this example)
-
-```
-curl -X GET -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/users/1
-```
-- Updating an user by id (id -> 1 in current seed for this example)
+- Updating an user by username
 
 ```
-curl -X PATCH -H "Authorization: the_token_provided_in_sign_in_response" -d 'full_name=juan' http://localhost:3000/api/v1/users/1
+curl -X PATCH -H "Authorization: the_token_provided_in_sign_in_response" -d 'full_name=juan' http://localhost:3000/api/v1/users/hernan
 ```
 
 - Creating an user
 
 ```
-curl -X POST -H "Authorization: the_token_provided_in_sign_in_response" -d 'full_name=juan&email=juan@juan.com&username=juan&password=12345678' http://localhost:3000/api/v1/users
+curl -X POST -H "Authorization: the_token_provided_in_sign_in_response" -d 'full_name=juan&username=juan&password=12345678' http://localhost:3000/api/v1/users
+```
+- Deleting an user
+
+```
+curl -X DELETE -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/users/hernan
 ```
 
 You can also look into the requests specs (/specs/requests) for more details on how
@@ -110,9 +115,11 @@ the endpoints are built not mentioned here.
 ## Gems used
 
 - `bcrypt` from authentication
+- `redis` and `connection_pool` to connect to redis  
 - `jwt` for json web token implementation
 - `rspec` for testing
 - `simple_cov` for coverage metrics
+- `database_cleaner-redis` to clean redis data in rspec properly
 
 ## Authentication flow
 

@@ -7,14 +7,14 @@ RSpec.describe AuthenticationService do
   let(:failed_attempts) { 0 }
 
   before do
-    FactoryBot.create(:user, username: 'hernan', password: 'my_secret_password',
-                             failed_attempts: failed_attempts)
+    FactoryBot.create(:user, username: 'hernan', password: 'My_secret_password1',
+                             full_name: 'Hernan Velasquez', failed_attempts: failed_attempts)
   end
   subject { AuthenticationService.new(username) }
 
   describe 'authenticating an un-existing user' do
     let(:username) { 'pepe' }
-    let(:password) { 'my_secret_password' }
+    let(:password) { 'My_secret_password1' }
 
     it 'does not validate successfully in any case' do
       expect(subject.authenticate(password)).to eq(:no_user)
@@ -23,7 +23,7 @@ RSpec.describe AuthenticationService do
   end
 
   describe 'authenticating an existing user with matching password' do
-    let(:password) { 'my_secret_password' }
+    let(:password) { 'My_secret_password1' }
 
     context 'user is unblocked' do
       it 'validates successfully' do
@@ -44,7 +44,7 @@ RSpec.describe AuthenticationService do
   end
 
   describe 'authenticating an existing user with no matching password' do
-    let(:password) { 'other passwoord' }
+    let(:password) { 'other_passwoord' }
 
     context 'user is unblocked' do
       it 'validates unsuccessfully' do
