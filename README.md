@@ -85,8 +85,6 @@ curl -X DELETE -H "Authorization: the_token_provided_in_sign_in_response" http:/
 # This returns :no_content if successful
 ```
 
-curl -X DELETE -H "Authorization: the_token_provided_in_sign_in_response" http://localhost:3000/api/v1/sign_out
-
 - Querying an user by username
 
 ```
