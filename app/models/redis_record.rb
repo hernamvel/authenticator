@@ -12,8 +12,8 @@ class RedisRecord
   end
 
   def self.connection
-    @redis ||= ConnectionPool::Wrapper.new do
-      Redis.new(url: ENV["REDIS_URL"])
+    @connection ||= ConnectionPool::Wrapper.new do
+      Redis.new(url: ENV['REDIS_URL'])
     end
   end
 
@@ -27,7 +27,7 @@ class RedisRecord
 
   def save
     valid_record = valid?
-    connection.set(redis_key, self.to_json) if valid_record
+    connection.set(redis_key, to_json) if valid_record
     @persisted = true
     valid_record
   end
@@ -38,14 +38,14 @@ class RedisRecord
   end
 
   def self.find(id)
-    new_model = self.find_by(id)
+    new_model = find_by(id)
     raise ActiveRecord::RecordNotFound if new_model.blank?
 
     new_model
   end
 
   def self.find_by(id)
-    value = connection.get(self.redis_key(id))
+    value = connection.get(redis_key(id))
     return nil if value.blank?
 
     new_model = model_name.human.constantize.new
@@ -53,7 +53,6 @@ class RedisRecord
     new_model.persisted = true
     new_model
   end
-
 
   def persisted?
     @persisted
@@ -63,8 +62,6 @@ class RedisRecord
     connection.del(redis_key)
   end
 
-  protected
-
   def self.redis_key(id_to_query)
     "#{Rails.env}_#{model_name.name}_#{id_to_query}"
   end
@@ -72,5 +69,4 @@ class RedisRecord
   def redis_key
     "#{Rails.env}_#{model_name.name}_#{id}"
   end
-
 end

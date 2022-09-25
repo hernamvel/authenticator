@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 class AuthenticationService
-
   attr_reader :user
 
   def initialize(username)
-    begin
-      @user = User.find(username)
-    rescue ActiveRecord::RecordNotFound
-      @user = nil
-    end
+    @user = User.find(username)
+  rescue ActiveRecord::RecordNotFound
+    @user = nil
   end
 
   def authenticate(password)
@@ -18,11 +15,8 @@ class AuthenticationService
     return :user_blocked if @user.blocked?
 
     result = if @user.authenticate(password)
-               @user.failed_attempts = 0
-               @user.session_token = JwtSessionService.encode(username: @user.username)
                :authenticated
              else
-               @user.increment_failed_attempts
                :authentication_failed
              end
     @user.save!

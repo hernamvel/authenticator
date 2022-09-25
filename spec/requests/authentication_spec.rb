@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Authentications', type: :request do
-
   before do
     FactoryBot.create(:user, username: 'hernan', password: 'My_secret_password1',
                              full_name: 'Hernan Velasquez', failed_attempts: 0)
@@ -36,13 +35,12 @@ RSpec.describe 'Authentications', type: :request do
   end
 
   describe 'DELETE /api/v1/sign_out' do
-
     context 'for a signed user' do
       before do
         post '/api/v1/sign_in', params: {
           username: 'hernan', password: 'My_secret_password1'
         }
-        token = response.parsed_body["token"]
+        token = response.parsed_body['token']
         headers = { 'ACCEPT' => 'application/json', 'Authorization' => token }
         delete '/api/v1/sign_out', headers: headers
       end

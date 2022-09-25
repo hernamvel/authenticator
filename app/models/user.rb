@@ -17,6 +17,17 @@ class User < RedisRecord
     username
   end
 
+  def authenticate(password)
+    result = super(password)
+    if result
+      @failed_attempts = 0
+      @session_token = JwtSessionService.encode(username: username)
+    else
+      increment_failed_attempts
+    end
+    result
+  end
+
   def blocked?
     @failed_attempts >= Rails.application.config.failed_attempts_to_block
   end

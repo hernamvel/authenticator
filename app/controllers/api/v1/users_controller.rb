@@ -55,7 +55,6 @@ module Api
       def user_params_update
         params.permit(:full_name, :password)
       end
-
     end
   end
 end
