@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
   def current_user
     return @current_user if @current_user.present?
 
-    @current_user = User.find(@decoded_token[:username])
+    @current_user = User.find_by(@decoded_token[:username])
     @current_user.present? && @current_user.session_token == @encoded_token ? @current_user : nil
   end
 
