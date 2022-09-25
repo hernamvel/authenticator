@@ -1,39 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Users", type: :request do
+RSpec.describe 'Users', type: :request do
   let(:authenticated) { true }
   let(:user) do
-    FactoryBot.create(:user, username: 'hernan', password: 'my_secret_password',
-                             email: 'hernan@mycompany.com', failed_attempts: 0)
+    FactoryBot.create(:user, username: 'hernan', password: 'My_secret_password1',
+                             failed_attempts: 0)
   end
 
   before do
     service = AuthenticationService.new(user.username)
     @headers = { 'ACCEPT' => 'application/json' }
     if authenticated
-      service.authenticate('my_secret_password')
+      service.authenticate('My_secret_password1')
       @headers['Authorization'] = service.token
-    end
-  end
-
-  describe 'GET /api/v1/users' do
-    before do
-      get '/api/v1/users', headers: @headers
-    end
-
-    context 'with a valid authentication token' do
-      it 'return status ok' do
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.count).to eq(1)
-      end
-    end
-
-    context 'with an invalid authentication token' do
-      let(:authenticated) { false }
-
-      it 'return status unauthorized' do
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
   end
 
@@ -47,7 +28,7 @@ RSpec.describe "Users", type: :request do
     context 'with a valid authentication token and existing user' do
       it 'return status ok' do
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['id']).to eq(user.id)
+        expect(response.parsed_body['username']).to eq(user.id)
       end
     end
 
@@ -69,23 +50,32 @@ RSpec.describe "Users", type: :request do
   end
 
   describe 'POST /api/v1/users' do
-    let(:email_to_create) { 'mauricio@mycompany.com' }
+    let(:full_name_create) { 'Hernan Mauricio Velasquez' }
+    let(:new_user_name) { 'hernamvel' }
 
     before do
-      params = { username: 'mauricio', password: 'my_other_password',
-                 email: email_to_create, full_name: 'Hernan Mauricio Velasquez' }
+      params = { username: new_user_name, password: 'My_2nd_password',
+                 full_name: full_name_create }
       post '/api/v1/users', headers: @headers, params: params
     end
 
     context 'with a valid authentication token and valid parameters' do
       it 'return status created' do
         expect(response).to have_http_status(:created)
-        expect(User.count).to eq(2)
+        expect(User.find('hernamvel')).to be_present
       end
     end
 
-    context 'with a valid authentication token but empty email' do
-      let(:email_to_create) { nil }
+    context 'with valid authentication token but an existing username' do
+      let(:new_user_name) { 'hernan' }
+
+      it 'return status unprocessable_entity' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with a valid authentication token but empty full_name' do
+      let(:full_name_create) { nil }
 
       it 'return status unprocessable_entity' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -141,7 +131,6 @@ RSpec.describe "Users", type: :request do
     context 'with a valid authentication token' do
       it 'return status ok' do
         expect(response).to have_http_status(:no_content)
-        expect(User.count).to eq(0)
       end
     end
 

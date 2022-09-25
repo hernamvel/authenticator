@@ -11,8 +11,9 @@ gem 'sqlite3', '~> 1.4'
 gem 'puma', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+# Use Redis adapter
+gem 'redis', '~> 4.0'
+gem 'connection_pool'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
@@ -32,8 +33,13 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'dotenv-rails'
   gem 'pry'
   gem 'pry-nav'
+end
+
+group :test do
+  gem 'database_cleaner-redis'
 end
 
 group :development do
