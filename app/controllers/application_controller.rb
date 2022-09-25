@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
     @encoded_token = token_from_header
     begin
       @decoded_token = JwtSessionService.decode(@encoded_token)
-      render json: { errors: 'invalid user' }, status: :unauthorized if current_user.blank?
+      render json: { errors: 'invalid user for token provided' }, status: :unauthorized if current_user.blank?
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
     end
