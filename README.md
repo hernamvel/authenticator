@@ -152,6 +152,8 @@ authentication_controller   AuthenticationService  user model  JwtSessionService
   sign in (that blocks after a number of unsuccessful attempts), sign out and 
   user administration services.
   
+- Redis is in place including pool connection wrapping.
+  
 - Security issues were considered including encrypting passowrds in the
 database and using session tokens via JWT.
 
