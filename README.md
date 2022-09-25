@@ -127,17 +127,19 @@ the codebase. Other flows can be inferred from the code and
 the standard Rails practices.
 
 ```
-authentication_controller   authentication_service  user model
- |                              |                       |
- |                              |                       |
- | ------ authenticate() ---->  |                       |
- |                              | --- authenticate() -> |
- |                              |                       | 
- |                              |<- authenticated user  |
- |                              |       with token      | 
- |                              |                       |
- |<- success response with user |                       |
- |        with token            |                       |
+authentication_controller   AuthenticationService  user model  JwtSessionService
+ |                              |                       |              |
+ |                              |                       |              |
+ | ------ authenticate() ---->  |                       |              |
+ |                              | --- authenticate() -> |              |
+ |                              |                       |              |
+ |                              |                       |    request   |
+ |                              |                       |---- token -->|
+ |                              |<- authenticated user  |              |
+ |                              |       with token      |              |
+ |                              |                       |              |
+ |<- success response with user |                       |              |
+ |        with token            |                       |              |
  |
  v
  :ok resoponse generated with new token
